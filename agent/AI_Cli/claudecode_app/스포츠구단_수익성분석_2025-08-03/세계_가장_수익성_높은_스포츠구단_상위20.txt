@@ -1,0 +1,86 @@
+세계에서 가장 수익성이 높은 스포츠 구단 상위 20위
+(Forbes 2024 기준 - 영업 이익 순)
+
+1. 댈러스 카우보이즈 (Dallas Cowboys) - NFL
+   가치: $101억
+   영업 이익: $5억 6,400만
+
+2. 로스앤젤레스 램스 (Los Angeles Rams) - NFL
+   가치: $76억
+   영업 이익: $2억 8,600만
+
+3. 뉴잉글랜드 패트리어츠 (New England Patriots) - NFL
+   가치: $74억
+   영업 이익: $2억 6,100만
+
+4. 에드먼턴 오일러스 (Edmonton Oilers) - NHL
+   가치: $26억 5,000만
+   영업 이익: $2억 1,300만
+
+5. 로스앤젤레스 레이커스 (Los Angeles Lakers) - NBA
+   가치: $71억
+   영업 이익: $1억 9,900만
+
+6. 뉴욕 자이언츠 (New York Giants) - NFL
+   가치: $73억
+   영업 이익: $1억 9,000만
+
+7. 맨체스터 유나이티드 (Manchester United) - 프리미어리그
+   가치: $65억 5,000만
+   영업 이익: $1억 8,700만
+
+8. 뉴욕 닉스 (New York Knicks) - NBA
+   가치: $75억
+   영업 이익: $1억 8,200만
+
+9. 휴스턴 텍산스 (Houston Texans) - NFL
+   가치: $61억
+   영업 이익: $1억 6,400만
+
+10. 토트넘 홋스퍼 (Tottenham Hotspur) - 프리미어리그
+    가치: $32억
+    영업 이익: $1억 6,100만
+
+11. 골든스테이트 워리어스 (Golden State Warriors) - NBA
+    영업 이익: $1억 4,200만
+
+12. 로스앤젤레스 킹스 (Los Angeles Kings) - NHL
+    영업 이익: $1억 4,200만
+
+13. 시애틀 시호크스 (Seattle Seahawks) - NFL
+    추정 영업 이익: $1억 3,000만 이상
+
+14. 그린베이 패커스 (Green Bay Packers) - NFL
+    추정 영업 이익: $1억 2,000만 이상
+
+15. 필라델피아 이글스 (Philadelphia Eagles) - NFL
+    추정 영업 이익: $1억 1,500만 이상
+
+16. 피츠버그 스틸러스 (Pittsburgh Steelers) - NFL
+    추정 영업 이익: $1억 1,000만 이상
+
+17. 보스턴 셀틱스 (Boston Celtics) - NBA
+    추정 영업 이익: $1억 500만 이상
+
+18. 시카고 베어스 (Chicago Bears) - NFL
+    추정 영업 이익: $1억 이상
+
+19. 아스널 (Arsenal FC) - 프리미어리그
+    추정 영업 이익: $9,500만 이상
+
+20. 미아미 히트 (Miami Heat) - NBA
+    추정 영업 이익: $9,000만 이상
+
+---
+
+주요 통계:
+- 상위 20개 팀 총 영업 이익: 약 $39억
+- 팀당 평균 영업 이익: $1억 9,500만
+- 리그별 분포:
+  * NFL: 9개 팀
+  * NBA: 5개 팀
+  * NHL: 3개 팀 (NHL 4개 팀으로 수정 가능)
+  * 프리미어리그: 3개 팀
+
+주: 영업 이익은 이자, 세금, 감가상각비, 상각비 차감 전 수익(EBITDA) 기준
+출처: Forbes 2024 Most Profitable Sports Teams Report

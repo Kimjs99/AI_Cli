@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>타임어택 농구 게임 (리더보드)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #game-container {
+            position: relative;
+            background: linear-gradient(to bottom, #87ceeb, #f0f8ff);
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+
+        #canvas-parent {
+            width: 100%;
+            height: 100%;
+        }
+
+        #ui {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 10px 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: none; 
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            font-size: 14px;
+        }
+        
+        @media (min-width: 600px) {
+            #ui { font-size: 16px; }
+        }
+
+
+        button {
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        #leaderboard-button, .gohome-button {
+            background-color: #ff9800;
+        }
+        #leaderboard-button:hover, .gohome-button:hover {
+            background-color: #f57c00;
+        }
+        #continue-game-button {
+            background-color: #007bff;
+        }
+        #continue-game-button:hover {
+            background-color: #0056b3;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            z-index: 20;
+            font-size: 14px;
+        }
+
+        .overlay-content {
+            background: rgba(40, 40, 40, 0.9);
+            padding: 20px 30px;
+            border-radius: 15px;
+            border: 2px solid white;
+            width: 90%;
+            max-width: 450px;
+        }
+
+        .overlay-content h2 {
+            font-size: 24px;
+            margin-top: 0;
+            color: #ffc107;
+        }
+        
+        .overlay-content p {
+            font-size: 16px;
+        }
+        
+        .overlay-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        #shot-feedback {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 16px;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        #leaderboard-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+            font-size: 16px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        #leaderboard-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #555;
+        }
+        #leaderboard-list li:last-child {
+            border-bottom: none;
+        }
+        #leaderboard-list .rank {
+            margin-right: 15px;
+            color: #ffc107;
+        }
+        #leaderboard-list .name {
+            flex-grow: 1;
+            text-align: left;
+        }
+        
+        #name-input-container, .difficulty-selector, #player-stats {
+            margin-top: 15px;
+        }
+        #name-input, #home-name-input {
+            font-size: 16px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        .difficulty-selector button.active {
+            background-color: #007bff;
+            box-shadow: 0 0 8px white;
+        }
+        #player-stats {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 10px;
+        }
+        #player-stats h3 {
+            margin: 0 0 10px 0;
+            color: #ffc107;
+            font-size: 18px;
+        }
+        #player-stats p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="canvas-parent"></div>
+        <div id="ui">
+            <span id="score">🎯 성공: 0</span>
+            <span id="attempts">🕹 시도: 0</span>
+            <span id="timer">⏱ 시간: 60</span>
+            <button id="pause-button">⏸ 중단</button>
+            <button id="restart-button">🔁 다시 시작</button>
+            <button id="leaderboard-button">🏆 리더보드</button>
+        </div>
+        <div id="shot-feedback"></div>
+        <div id="home-overlay" class="overlay" style="display: flex;">
+            <div class="overlay-content">
+                <h2>농구 슈팅 챌린지</h2>
+                <div id="player-stats"><h3>나의 통산 기록</h3><p>불러오는 중...</p></div>
+                <div id="home-name-container"><p>이름을 입력하세요</p><input type="text" id="home-name-input" placeholder="Player" maxlength="8"></div>
+                <div class="difficulty-selector"><p>난이도 선택</p><div class="overlay-buttons"><button class="difficulty-button" data-difficulty="easy">Easy</button><button class="difficulty-button active" data-difficulty="normal">Normal</button><button class="difficulty-button" data-difficulty="hard">Hard</button></div></div>
+                <div class="overlay-buttons"><button id="start-game-button">게임 시작</button><button id="continue-game-button" style="display: none;">게임 계속하기</button></div>
+            </div>
+        </div>
+        <div id="game-over-overlay" class="overlay">
+            <div class="overlay-content">
+                <h2>게임 종료!</h2><p id="final-stats"></p><p id="final-message"></p>
+                <div id="name-input-container"><input type="text" id="name-input" placeholder="이름 입력 (8자 이내)" maxlength="8"><button id="submit-score-button">점수 등록</button></div>
+                <div class="overlay-buttons"><button id="restart-from-gameover-button">🔁 다시 시작</button><button class="gohome-button">🏠 홈으로</button></div>
+            </div>
+        </div>
+        <div id="pause-overlay" class="overlay">
+             <div class="overlay-content">
+                <h2>일시정지</h2>
+                <div class="overlay-buttons"><button id="resume-button">▶️ 계속하기</button><button id="restart-from-pause-button">🔁 다시 시작</button><button class="gohome-button">🏠 홈으로</button></div>
+            </div>
+        </div>
+        <div id="leaderboard-overlay" class="overlay">
+            <div class="overlay-content">
+                <h2>🏆 리더보드</h2><ol id="leaderboard-list"></ol>
+                <div class="overlay-buttons"><button id="restart-from-leaderboard-button">🔁 다시 시작</button><button class="gohome-button">🏠 홈으로</button></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+      const firebaseConfig = {
+        // 여기에 실제 Firebase 구성 정보를 입력하세요.
+      };
+      
+      const appId = "default-basketball-game";
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { collection, query, orderBy, limit, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const sketch = (p) => {
+            const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : (window.firebaseConfig || {});
+            const appId = typeof __app_id !== 'undefined' ? __app_id : (window.appId || 'default-basketball-game');
+
+            let app, auth, db, userId;
+            
+            if (firebaseConfig && firebaseConfig.apiKey) {
+                try {
+                    app = initializeApp(firebaseConfig);
+                    auth = getAuth(app);
+                    db = getFirestore(app);
+                } catch (e) {
+                    console.error("Firebase 초기화 오류:", e);
+                    auth = null;
+                    db = null;
+                }
+            } else {
+                console.warn("Firebase 구성 정보가 없습니다. 온라인 기능이 비활성화됩니다.");
+                auth = null;
+                db = null;
+            }
+
+            let ball, hoop, gravity;
+            let score = 0, attempts = 0, timeLeft = 60;
+            let gameActive = false, isPaused = false, isDragging = false;
+            let playerX, playerY;
+            let timerInterval, feedbackTimeout;
+            let difficulty = 'normal', playerName = 'Player';
+            let playerStats = { totalScore: 0, totalAttempts: 0, gamesPlayed: 0, highestScore: 0 };
+            const baseWidth = 800;
+            let scale = 1;
+
+            p.setup = function() {
+                const canvasParent = document.getElementById('canvas-parent');
+                let canvas = p.createCanvas(canvasParent.offsetWidth, canvasParent.offsetHeight);
+                canvas.parent('canvas-parent');
+                
+                calculateScale();
+                
+                playerY = p.height - (100 * scale);
+                playerX = 120 * scale;
+                
+                attachEventListeners();
+
+                if (auth) {
+                    onAuthStateChanged(auth, async (user) => {
+                        if (user) {
+                            userId = user.uid;
+                            await loadPlayerStats();
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    });
+                } else {
+                    handleNoFirebase();
+                }
+                
+                p.noLoop();
+            }
+
+            function calculateScale() {
+                scale = p.width / baseWidth;
+            }
+
+            function attachEventListeners() {
+                document.getElementById('start-game-button').onclick = startGame;
+                document.querySelectorAll('.difficulty-button').forEach(btn => {
+                    btn.onclick = (e) => {
+                        document.querySelector('.difficulty-button.active').classList.remove('active');
+                        e.target.classList.add('active');
+                        difficulty = e.target.dataset.difficulty;
+                    };
+                });
+                document.getElementById('pause-button').onclick = togglePause;
+                document.getElementById('resume-button').onclick = togglePause;
+                document.getElementById('restart-button').onclick = restartGame;
+                document.getElementById('restart-from-pause-button').onclick = restartGame;
+                document.getElementById('leaderboard-button').onclick = showLeaderboard;
+                document.getElementById('submit-score-button').onclick = submitScore;
+                document.querySelectorAll('.gohome-button').forEach(btn => btn.onclick = goToHome);
+                document.getElementById('restart-from-leaderboard-button').onclick = restartGame;
+                document.getElementById('restart-from-gameover-button').onclick = restartGame;
+                document.getElementById('continue-game-button').onclick = continueGame;
+            }
+
+            function startGame() {
+                playerName = document.getElementById('home-name-input').value.trim() || 'Player';
+                document.getElementById('home-overlay').style.display = 'none';
+                document.getElementById('ui').style.display = 'flex';
+                initGame();
+            }
+
+            function initGame() {
+                score = 0; attempts = 0; timeLeft = 60;
+                gameActive = true; isPaused = false;
+
+                let hoopX;
+                switch(difficulty) {
+                    case 'easy': hoopX = p.width - (300 * scale); break;
+                    case 'hard': hoopX = p.width - (150 * scale); break;
+                    default: hoopX = p.width - (220 * scale); break;
+                }
+
+                ball = new Ball(playerX + (30 * scale), playerY - (80 * scale));
+                hoop = new Hoop(hoopX, p.height * 0.4);
+                gravity = p.createVector(0, 0.5 * scale);
+
+                clearInterval(timerInterval);
+                timerInterval = setInterval(() => {
+                    if (gameActive && !isPaused && timeLeft > 0) timeLeft--;
+                }, 1000);
+
+                document.getElementById('game-over-overlay').style.display = 'none';
+                document.getElementById('pause-overlay').style.display = 'none';
+                document.getElementById('leaderboard-overlay').style.display = 'none';
+                document.getElementById('continue-game-button').style.display = 'none';
+                
+                const nameInputContainer = document.getElementById('name-input-container');
+                nameInputContainer.innerHTML = `<input type="text" id="name-input" value="${playerName}" placeholder="이름 입력" maxlength="8"><button id="submit-score-button">점수 등록</button>`;
+                document.getElementById('submit-score-button').onclick = submitScore;
+
+                p.loop();
+            }
+
+            p.draw = function() {
+                if (!gameActive) return;
+                p.background(135, 206, 250);
+                drawCourt(); drawPlayer(); hoop.display();
+                if (!isPaused) ball.update();
+                ball.display(); ball.checkInteractions(hoop);
+                if (ball.isOffScreen()) { ball.analyzeMiss(hoop); ball.reset(); }
+                updateUI();
+                if (timeLeft === 0 && gameActive) endGame();
+            }
+            
+            p.mousePressed = () => { if (!isPaused && gameActive && ball.contains(p.mouseX, p.mouseY)) { isDragging = true; ball.startDrag(p.mouseX, p.mouseY); } }
+            p.mouseDragged = () => { if (isDragging) ball.drag(p.mouseX, p.mouseY); }
+            p.mouseReleased = () => { if (isDragging) { isDragging = false; if (gameActive) { ball.shoot(p.mouseX, p.mouseY); attempts++; } } }
+            
+            p.windowResized = () => {
+                const canvasParent = document.getElementById('canvas-parent');
+                p.resizeCanvas(canvasParent.offsetWidth, canvasParent.offsetHeight);
+                calculateScale();
+                playerY = p.height - (100 * scale);
+                playerX = 120 * scale;
+                if (hoop) {
+                    let hoopX;
+                    switch(difficulty) {
+                        case 'easy': hoopX = p.width - (300 * scale); break;
+                        case 'hard': hoopX = p.width - (150 * scale); break;
+                        default: hoopX = p.width - (220 * scale); break;
+                    }
+                    hoop.x = hoopX;
+                    hoop.y = p.height * 0.4;
+                    hoop.updatePositions();
+                }
+            }
+
+            function togglePause() {
+                if (!gameActive) return;
+                isPaused = !isPaused;
+                document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+                isPaused ? p.noLoop() : p.loop();
+            }
+
+            function continueGame() {
+                document.getElementById('home-overlay').style.display = 'none';
+                document.getElementById('ui').style.display = 'flex';
+                if(isPaused) togglePause();
+                else p.loop();
+            }
+
+            function goToHome() {
+                document.getElementById('pause-overlay').style.display = 'none';
+                document.getElementById('game-over-overlay').style.display = 'none';
+                document.getElementById('leaderboard-overlay').style.display = 'none';
+                document.getElementById('ui').style.display = 'none';
+                document.getElementById('home-overlay').style.display = 'flex';
+                document.getElementById('continue-game-button').style.display = (gameActive && timeLeft > 0) ? 'inline-block' : 'none';
+                p.noLoop();
+            }
+
+            function restartGame() { initGame(); }
+
+            async function endGame() {
+                gameActive = false;
+                p.noLoop();
+                await updatePlayerStats();
+                await loadPlayerStats();
+                let accuracy = attempts > 0 ? (score / attempts) * 100 : 0;
+                document.getElementById('final-stats').innerText = `성공: ${score} / 시도: ${attempts} (성공률: ${accuracy.toFixed(1)}%)`;
+                document.getElementById('game-over-overlay').style.display = 'flex';
+                document.getElementById('name-input').value = playerName;
+            }
+
+            function drawCourt() { p.fill(222, 184, 135); p.noStroke(); p.rect(0, p.height - (60 * scale), p.width, (60 * scale)); }
+            function drawPlayer() { p.fill(100); p.noStroke(); p.ellipse(playerX, playerY, 60 * scale, 60 * scale); p.rect(playerX - (20 * scale), playerY + (30 * scale), 40 * scale, 70 * scale, 5 * scale); }
+            function updateUI() { document.getElementById("score").innerText = `🎯 성공: ${score}`; document.getElementById("attempts").innerText = `🕹 시도: ${attempts}`; document.getElementById("timer").innerText = `⏱ 시간: ${timeLeft}`; }
+            function showFeedback(message) { const el = document.getElementById('shot-feedback'); el.innerText = message; el.style.opacity = '1'; clearTimeout(feedbackTimeout); feedbackTimeout = setTimeout(() => { el.style.opacity = '0'; }, 2000); }
+
+            function handleNoFirebase() {
+                const statsEl = document.getElementById('player-stats');
+                statsEl.innerHTML = `<h3>나의 통산 기록</h3><p>온라인 기록을 사용하려면<br>Firebase 구성이 필요합니다.</p>`;
+                document.getElementById('leaderboard-button').style.display = 'none';
+                document.getElementById('submit-score-button').style.display = 'none';
+            }
+
+            async function loadPlayerStats() {
+                if (!db || !userId) return;
+                const docRef = doc(db, `/artifacts/${appId}/users/${userId}/playerstats`, 'summary');
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    playerStats = docSnap.data();
+                }
+                document.getElementById('home-name-input').value = playerName = playerStats.playerName || 'Player';
+                const statsEl = document.getElementById('player-stats');
+                statsEl.innerHTML = `<h3>나의 통산 기록</h3>
+                    <p>최고 점수: ${playerStats.highestScore}점</p>
+                    <p>총 득점: ${playerStats.totalScore}점</p>
+                    <p>총 시도: ${playerStats.totalAttempts}회</p>
+                    <p>플레이 횟수: ${playerStats.gamesPlayed}회</p>`;
+            }
+
+            async function updatePlayerStats() {
+                if (!db || !userId) return;
+                const docRef = doc(db, `/artifacts/${appId}/users/${userId}/playerstats`, 'summary');
+                const newHighest = score > playerStats.highestScore ? score : playerStats.highestScore;
+                const statsUpdate = {
+                    totalScore: increment(score),
+                    totalAttempts: increment(attempts),
+                    gamesPlayed: increment(1),
+                    highestScore: newHighest,
+                    playerName: playerName
+                };
+                await setDoc(docRef, statsUpdate, { merge: true });
+            }
+            
+            async function showLeaderboard() {
+                if (!db) {
+                    alert("리더보드 기능은 Firebase 구성이 필요합니다.");
+                    return;
+                }
+                const listEl = document.getElementById('leaderboard-list');
+                listEl.innerHTML = '<li>불러오는 중...</li>';
+                document.getElementById('leaderboard-overlay').style.display = 'flex';
+
+                try {
+                    const q = query(collection(db, `/artifacts/${appId}/public/data/leaderboard`), orderBy("score", "desc"), limit(5));
+                    const querySnapshot = await getDocs(q);
+                    listEl.innerHTML = '';
+                    if (querySnapshot.empty) { listEl.innerHTML = '<li>등록된 점수가 없습니다.</li>'; return; }
+                    let rank = 1;
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        listEl.innerHTML += `<li><span class="rank">${rank++}.</span> <span class="name">${data.name}</span> <span class="score">${data.score}점</span></li>`;
+                    });
+                } catch (e) { listEl.innerHTML = '<li>리더보드를 불러오는 데 실패했습니다.</li>'; }
+            }
+
+            function hideLeaderboard() { document.getElementById('leaderboard-overlay').style.display = 'none'; }
+
+            async function submitScore() {
+                playerName = document.getElementById('name-input').value.trim();
+                if (!playerName) {
+                    alert("이름을 입력해주세요.");
+                    return;
+                }
+                if (!db) {
+                    alert("점수 등록 기능은 Firebase 구성이 필요합니다.");
+                    return;
+                }
+                const btn = document.getElementById('submit-score-button');
+                btn.disabled = true; btn.innerText = '등록 중...';
+                try {
+                    await addDoc(collection(db, `/artifacts/${appId}/public/data/leaderboard`), { name: playerName, score: score, timestamp: serverTimestamp() });
+                    document.getElementById('name-input-container').innerHTML = "<p>점수가 등록되었습니다!</p>";
+                } catch (e) { btn.disabled = false; btn.innerText = '점수 등록'; }
+            }
+
+            class Ball {
+                constructor(x, y) { this.initialPos = p.createVector(x, y); this.reset(); }
+                update() { if (this.isMoving) { this.prevPos.set(this.pos); this.vel.add(gravity); this.pos.add(this.vel); if (this.pos.y < this.shotPeakY) this.shotPeakY = this.pos.y; } }
+                display() { p.fill(210, 105, 30); p.stroke(0); p.strokeWeight(1.5 * scale); p.ellipse(this.pos.x, this.pos.y, this.radius * 2); if (isDragging) { p.stroke(255, 0, 0, 150); p.strokeWeight(3 * scale); p.line(this.pos.x, this.pos.y, p.mouseX, p.mouseY); } }
+                shoot(mx, my) { let force = p5.Vector.sub(this.dragStart, p.createVector(mx, my)); this.shotPower = force.mag(); this.vel = force.mult(0.15 * scale); this.isMoving = true; this.dragStart = null; this.shotPeakY = this.pos.y; }
+                checkInteractions(hoop) { if (!this.isMoving) return; if (this.vel.y > 0 && this.prevPos.y < hoop.y && this.pos.y >= hoop.y && this.pos.x > hoop.rimFront.x && this.pos.x < hoop.rimBack.x) { score++; showFeedback("🎉 나이스 샷!"); this.reset(); return; } if (p.dist(this.pos.x, this.pos.y, hoop.rimFront.x, hoop.rimFront.y) < this.radius || p.dist(this.pos.x, this.pos.y, hoop.rimBack.x, hoop.rimBack.y) < this.radius) { this.vel.y *= -0.6; this.vel.x *= 0.8; } if (this.pos.x + this.radius > hoop.backboard.x && this.prevPos.x + this.radius <= hoop.backboard.x && this.pos.y > hoop.backboard.y && this.pos.y < hoop.backboard.y + hoop.backboard.h) { this.pos.x = hoop.backboard.x - this.radius; this.vel.x *= -0.8; } }
+                analyzeMiss(hoop) { const powerThreshold = 80 * scale; if (this.shotPower > powerThreshold && this.pos.x > hoop.rimBack.x) { showFeedback("너무 강했어요!"); } else if (this.shotPeakY > hoop.y) { showFeedback("각도가 너무 낮아요!"); } else if (this.shotPower < powerThreshold && this.pos.x < hoop.rimFront.x) { showFeedback("힘이 부족해요!"); } else { showFeedback("아깝네요! 다시 시도해보세요."); } }
+                reset() { this.pos = this.initialPos.copy(); this.prevPos = this.initialPos.copy(); this.vel = p.createVector(0, 0); this.radius = 20 * scale; this.isMoving = false; this.dragStart = null; }
+                isOffScreen() { return this.pos.y > p.height + this.radius * 2 || this.pos.x < -this.radius || this.pos.x > p.width + this.radius; }
+                contains(mx, my) { return !this.isMoving && p.dist(mx, my, this.pos.x, this.pos.y) < this.radius; }
+                startDrag(mx, my) { this.dragStart = p.createVector(mx, my); }
+                drag(mx, my) {}
+            }
+            class Hoop {
+                constructor(x, y) { this.x = x; this.y = y; this.w = 100 * scale; this.updatePositions(); }
+                updatePositions() { this.rimFront = p.createVector(this.x, this.y); this.rimBack = p.createVector(this.x + this.w, this.y); this.backboard = { x: this.x + this.w, y: this.y - (70 * scale), w: 10 * scale, h: 140 * scale }; }
+                display() { p.fill(255, 255, 255, 200); p.stroke(0); p.strokeWeight(2 * scale); p.rect(this.backboard.x, this.backboard.y, this.backboard.w, this.backboard.h, 5 * scale); p.stroke(255, 80, 0); p.strokeWeight(5 * scale); p.line(this.rimFront.x, this.rimFront.y, this.rimBack.x, this.rimBack.y); }
+            }
+        };
+        new p5(sketch);
+    </script>
+</body>
+</html>

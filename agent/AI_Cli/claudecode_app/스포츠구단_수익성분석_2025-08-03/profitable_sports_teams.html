@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>세계에서 가장 수익성이 높은 스포츠 구단 상위 20위</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .team-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .team-item {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .team-item.filtered {
+            background: #e3f2fd;
+            border-color: #3498db;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.2);
+        }
+
+        .team-item.hidden {
+            display: none;
+        }
+
+        .team-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .team-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .rank {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-right: 15px;
+        }
+
+        .team-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .team-name:hover {
+            color: #3498db;
+        }
+
+        .league {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+
+        .league.nfl { background: #013369; }
+        .league.nba { background: #C8102E; }
+        .league.nhl { background: #000000; }
+        .league.premier { background: #37003c; }
+
+        .financial-info {
+            margin-top: 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .value, .profit {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+
+        .profit {
+            border-left-color: #27ae60;
+        }
+
+        .label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .amount {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .stats {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            margin-top: 40px;
+            border-radius: 10px;
+        }
+
+        .stats h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .league-distribution {
+            margin-top: 30px;
+        }
+
+        .league-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .league-stat {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .league-stat:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .league-stat.active {
+            background: rgba(52, 152, 219, 0.3);
+            border: 2px solid #3498db;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px 15px 0 0;
+            position: relative;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .modal-header .team-location {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .close:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .team-details {
+            display: grid;
+            gap: 25px;
+        }
+
+        .detail-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .detail-section h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 1.3rem;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .detail-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .detail-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .achievements {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .achievements ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .achievements li {
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .financial-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .content {
+                padding: 20px 15px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 2% auto;
+            }
+
+            .modal-header {
+                padding: 20px;
+            }
+
+            .modal-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .modal-body {
+                padding: 20px;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        /* PDF 최적화 스타일 */
+        @media print {
+            @page {
+                size: A4;
+                margin: 1.5cm;
+            }
+            
+            body {
+                background: white !important;
+                padding: 0;
+                font-size: 11px;
+                line-height: 1.3;
+            }
+            
+            .container {
+                box-shadow: none !important;
+                border-radius: 0 !important;
+            }
+            
+            .modal {
+                display: none !important;
+            }
+            
+            .team-name {
+                cursor: default !important;
+                color: #2c3e50 !important;
+                font-size: 1.1rem;
+                margin-bottom: 6px;
+            }
+            
+            .league-stat {
+                cursor: default !important;
+            }
+            
+            .team-item {
+                padding: 12px !important;
+                margin-bottom: 8px;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            
+            .content {
+                padding: 15px !important;
+            }
+            
+            .header {
+                padding: 20px !important;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem !important;
+                margin-bottom: 8px;
+            }
+            
+            .rank {
+                width: 30px !important;
+                height: 30px !important;
+                line-height: 30px !important;
+                font-size: 0.9rem !important;
+                margin-right: 10px !important;
+            }
+            
+            .financial-info {
+                margin-top: 8px !important;
+                gap: 8px !important;
+            }
+            
+            .value, .profit {
+                padding: 8px !important;
+            }
+            
+            .stats {
+                padding: 15px !important;
+                margin-top: 20px !important;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            
+            .league-breakdown {
+                gap: 8px !important;
+            }
+            
+            .league-stat {
+                padding: 8px !important;
+            }
+            
+            .team-list {
+                gap: 6px !important;
+            }
+        }\n    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏆 세계 최고 수익 스포츠 구단</h1>
+            <p>Forbes 2024 기준 - 영업 이익 순위 TOP 20</p>
+        </div>
+
+        <div class="content">
+            <div class="team-list">
+                <div class="team-item" data-league="nfl">
+                    <span class="rank">1</span>
+                    <div class="team-name" onclick="openModal('cowboys')">댈러스 카우보이즈 (Dallas Cowboys)<span class="league nfl">NFL</span></div>
+                    <div class="financial-info">
+                        <div class="value">
+                            <div class="label">구단 가치</div>
+                            <div class="amount">$101억</div>
+                        </div>
+                        <div class="profit">
+                            <div class="label">영업 이익</div>
+                            <div class="amount">$5억 6,400만</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-item" data-league="nfl">
+                    <span class="rank">2</span>
+                    <div class="team-name" onclick="openModal('rams')">로스앤젤레스 램스 (Los Angeles Rams)<span class="league nfl">NFL</span></div>
+                    <div class="financial-info">
+                        <div class="value">
+                            <div class="label">구단 가치</div>
+                            <div class="amount">$76억</div>
+                        </div>
+                        <div class="profit">
+                            <div class="label">영업 이익</div>
+                            <div class="amount">$2억 8,600만</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-item" data-league="nfl">
+                    <span class="rank">3</span>
+                    <div class="team-name" onclick="openModal('patriots')">뉴잉글랜드 패트리어츠 (New England Patriots)<span class="league nfl">NFL</span></div>
+                    <div class="financial-info">
+                        <div class="value">
+                            <div class="label">구단 가치</div>
+                            <div class="amount">$74억</div>
+                        </div>
+                        <div class="profit">
+                            <div class="label">영업 이익</div>
+                            <div class="amount">$2억 6,100만</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-item" data-league="nhl">
+                    <span class="rank">4</span>
+                    <div class="team-name" onclick="openModal('oilers')">에드먼턴 오일러스 (Edmonton Oilers)<span class="league nhl">NHL</span></div>
+                    <div class="financial-info">
+                        <div class="value">
+                            <div class="label">구단 가치</div>
+                            <div class="amount">$26억 5,000만</div>
+                        </div>
+                        <div class="profit">
+                            <div class="label">영업 이익</div>
+                            <div class="amount">$2억 1,300만</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-item" data-league="nba">
+                    <span class="rank">5</span>
+                    <div class="team-name" onclick="openModal('lakers')">로스앤젤레스 레이커스 (Los Angeles Lakers)<span class="league nba">NBA</span></div>
+                    <div class="financial-info">
+                        <div class="value">
+                            <div class="label">구단 가치</div>
+                            <div class="amount">$71억</div>
+                        </div>
+                        <div class="profit">
+                            <div class="label">영업 이익</div>
+                            <div class="amount">$1억 9,900만</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-item" data-league="nfl">
+                    <span class="rank">6</span>
+                    <div class="team-name" onclick="openModal('giants')">뉴욕 자이언츠 (New York Giants)<span class="league nfl">NFL</span></div>
+                    <div class="financial-info">
+                        <div class="value">
+                            <div class="label">구단 가치</div>
+                            <div class="amount">$73억</div>
+                        </div>
+                        <div class="profit">
+                            <div class="label">영업 이익</div>
+                            <div class="amount">$1억 9,000만</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-item" data-league="premier">
+                    <span class="rank">7</span>
+                    <div class="team-name" onclick="openModal('manchester')">맨체스터 유나이티드 (Manchester United)<span class="league premier">프리미어리그</span></div>
+                    <div class="financial-info">
+                        <div class="value">
+                            <div class="label">구단 가치</div>
+                            <div class="amount">$65억 5,000만</div>
+                        </div>
+                        <div class="profit">
+                            <div class="label">영업 이익</div>
+                            <div class="amount">$1억 8,700만</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-item" data-league="nba">
+                    <span class="rank">8</span>
+                    <div class="team-name" onclick="openModal('knicks')">뉴욕 닉스 (New York Knicks)<span class="league nba">NBA</span></div>
+                    <div class="financial-info">
+                        <div class="value">
+                            <div class="label">구단 가치</div>
+                            <div class="amount">$75억</div>
+                        </div>
+                        <div class="profit">
+                            <div class="label">영업 이익</div>
+                            <div class="amount">$1억 8,200만</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-item" data-league="nfl">
+                    <span class="rank">9</span>
+                    <div class="team-name" onclick="openModal('texans')">휴스턴 텍산스 (Houston Texans)<span class="league nfl">NFL</span></div>
+                    <div class="financial-info">
+                        <div class="value">
+                            <div class="label">구단 가치</div>
+                            <div class="amount">$61억</div>
+                        </div>
+                        <div class="profit">
+                            <div class="label">영업 이익</div>
+                            <div class="amount">$1억 6,400만</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-item" data-league="premier">
+                    <span class="rank">10</span>
+                    <div class="team-name" onclick="openModal('tottenham')">토트넘 홋스퍼 (Tottenham Hotspur)<span class="league premier">프리미어리그</span></div>
+                    <div class="financial-info">
+                        <div class="value">
+                            <div class="label">구단 가치</div>
+                            <div class="amount">$32억</div>
+                        </div>
+                        <div class="profit">
+                            <div class="label">영업 이익</div>
+                            <div class="amount">$1억 6,100만</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-item" data-league="nba">
+                    <span class="rank">11</span>
+                    <div class="team-name" onclick="openModal('warriors')">골든스테이트 워리어스 (Golden State Warriors)<span class="league nba">NBA</span></div>
+                    <div class="financial-info">
+                        <div class="value">
+                            <div class="label">구단 가치</div>
+                            <div class="amount">추정 $70억+</div>
+                        </div>
+                        <div class="profit">
+                            <div class="label">영업 이익</div>
+                            <div class="amount">$1억 4,200만</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-item" data-league="nhl">
+                    <span class="rank">12</span>
+                    <div class="team-name" onclick="openModal('kings')">로스앤젤레스 킹스 (Los Angeles Kings)<span class="league nhl">NHL</span></div>
+                    <div class="financial-info">
+                        <div class="value">
+                            <div class="label">구단 가치</div>
+                            <div class="amount">추정 $25억+</div>
+                        </div>
+                        <div class="profit">
+                            <div class="label">영업 이익</div>
+                            <div class="amount">$1억 4,200만</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-item" data-league="nfl">
+                    <span class="rank">13</span>
+                    <div class="team-name" onclick="openModal('seahawks')">시애틀 시호크스 (Seattle Seahawks)<span class="league nfl">NFL</span></div>
+                    <div class="financial-info">
+                        <div class="value">
+                            <div class="label">구단 가치</div>
+                            <div class="amount">추정 $55억+</div>
+                        </div>
+                        <div class="profit">
+                            <div class="label">영업 이익</div>
+                            <div class="amount">$1억 3,000만 이상</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-item" data-league="nfl">
+                    <span class="rank">14</span>
+                    <div class="team-name" onclick="openModal('packers')">그린베이 패커스 (Green Bay Packers)<span class="league nfl">NFL</span></div>
+                    <div class="financial-info">
+                        <div class="value">
+                            <div class="label">구단 가치</div>
+                            <div class="amount">추정 $50억+</div>
+                        </div>
+                        <div class="profit">
+                            <div class="label">영업 이익</div>
+                            <div class="amount">$1억 2,000만 이상</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-item" data-league="nfl">
+                    <span class="rank">15</span>
+                    <div class="team-name" onclick="openModal('eagles')">필라델피아 이글스 (Philadelphia Eagles)<span class="league nfl">NFL</span></div>
+                    <div class="financial-info">
+                        <div class="value">
+                            <div class="label">구단 가치</div>
+                            <div class="amount">추정 $48억+</div>
+                        </div>
+                        <div class="profit">
+                            <div class="label">영업 이익</div>
+                            <div class="amount">$1억 1,500만 이상</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-item" data-league="nfl">
+                    <span class="rank">16</span>
+                    <div class="team-name" onclick="openModal('steelers')">피츠버그 스틸러스 (Pittsburgh Steelers)<span class="league nfl">NFL</span></div>
+                    <div class="financial-info">
+                        <div class="value">
+                            <div class="label">구단 가치</div>
+                            <div class="amount">추정 $46억+</div>
+                        </div>
+                        <div class="profit">
+                            <div class="label">영업 이익</div>
+                            <div class="amount">$1억 1,000만 이상</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-item" data-league="nba">
+                    <span class="rank">17</span>
+                    <div class="team-name" onclick="openModal('celtics')">보스턴 셀틱스 (Boston Celtics)<span class="league nba">NBA</span></div>
+                    <div class="financial-info">
+                        <div class="value">
+                            <div class="label">구단 가치</div>
+                            <div class="amount">추정 $45억+</div>
+                        </div>
+                        <div class="profit">
+                            <div class="label">영업 이익</div>
+                            <div class="amount">$1억 500만 이상</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-item" data-league="nfl">
+                    <span class="rank">18</span>
+                    <div class="team-name" onclick="openModal('bears')">시카고 베어스 (Chicago Bears)<span class="league nfl">NFL</span></div>
+                    <div class="financial-info">
+                        <div class="value">
+                            <div class="label">구단 가치</div>
+                            <div class="amount">추정 $44억+</div>
+                        </div>
+                        <div class="profit">
+                            <div class="label">영업 이익</div>
+                            <div class="amount">$1억 이상</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-item" data-league="premier">
+                    <span class="rank">19</span>
+                    <div class="team-name" onclick="openModal('arsenal')">아스널 (Arsenal FC)<span class="league premier">프리미어리그</span></div>
+                    <div class="financial-info">
+                        <div class="value">
+                            <div class="label">구단 가치</div>
+                            <div class="amount">추정 $30억+</div>
+                        </div>
+                        <div class="profit">
+                            <div class="label">영업 이익</div>
+                            <div class="amount">$9,500만 이상</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-item" data-league="nba">
+                    <span class="rank">20</span>
+                    <div class="team-name" onclick="openModal('heat')">미아미 히트 (Miami Heat)<span class="league nba">NBA</span></div>
+                    <div class="financial-info">
+                        <div class="value">
+                            <div class="label">구단 가치</div>
+                            <div class="amount">추정 $35억+</div>
+                        </div>
+                        <div class="profit">
+                            <div class="label">영업 이익</div>
+                            <div class="amount">$9,000만 이상</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats">
+                <h2>📊 주요 통계</h2>
+                <div id="filterStatus" style="text-align: center; margin-bottom: 20px; display: none;">
+                    <span style="background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; font-size: 0.9rem;">
+                        필터링 중: <span id="activeFilter"></span>
+                        <button onclick="resetFilter()" style="background: none; border: none; color: white; margin-left: 10px; cursor: pointer; font-size: 1rem;">✕</button>
+                    </span>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number">$39억</span>
+                        <span>총 영업 이익</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">$1억 9,500만</span>
+                        <span>팀당 평균 영업 이익</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">12%</span>
+                        <span>전년 대비 증가율</span>
+                    </div>
+                </div>
+
+                <div class="league-distribution">
+                    <h3>리그별 분포</h3>
+                    <div class="league-breakdown">
+                        <div class="league-stat" onclick="filterByLeague('nfl')">
+                            <span class="stat-number">10</span>
+                            <span>NFL 팀</span>
+                        </div>
+                        <div class="league-stat" onclick="filterByLeague('nba')">
+                            <span class="stat-number">5</span>
+                            <span>NBA 팀</span>
+                        </div>
+                        <div class="league-stat" onclick="filterByLeague('nhl')">
+                            <span class="stat-number">2</span>
+                            <span>NHL 팀</span>
+                        </div>
+                        <div class="league-stat" onclick="filterByLeague('premier')">
+                            <span class="stat-number">3</span>
+                            <span>프리미어리그 팀</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>주:</strong> 영업 이익은 이자, 세금, 감가상각비, 상각비 차감 전 수익(EBITDA) 기준</p>
+            <p><strong>출처:</strong> Forbes 2024 Most Profitable Sports Teams Report</p>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="teamModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2 id="modalTeamName"></h2>
+                <div class="team-location" id="modalTeamLocation"></div>
+            </div>
+            <div class="modal-body">
+                <div class="team-details" id="modalTeamDetails">
+                    <!-- Content will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const teamData = {
+            cowboys: {
+                name: "댈러스 카우보이즈",
+                englishName: "Dallas Cowboys",
+                location: "댈러스, 텍사스",
+                founded: "1960년",
+                stadium: "AT&T Stadium (80,000석)",
+                owner: "제리 존스",
+                headCoach: "마이크 맥카시",
+                championships: "5회 (1971, 1977, 1992, 1993, 1995)",
+                conference: "NFC East",
+                nickname: "America's Team",
+                achievements: [
+                    "NFL 챔피언십 5회 우승",
+                    "슈퍼볼 출전 8회",
+                    "연속 플레이오프 진출 기록 보유",
+                    "NFL 역사상 가장 가치 있는 스포츠 프랜차이즈"
+                ],
+                revenue: "$1,095백만 (2023)",
+                operatingIncome: "$564백만",
+                value: "$10.1십억"
+            },
+            rams: {
+                name: "로스앤젤레스 램스",
+                englishName: "Los Angeles Rams",
+                location: "로스앤젤레스, 캘리포니아",
+                founded: "1936년",
+                stadium: "SoFi Stadium (70,240석)",
+                owner: "스탠 크롱키",
+                headCoach: "숀 맥베이",
+                championships: "2회 (1999, 2021)",
+                conference: "NFC West",
+                nickname: "LA Rams",
+                achievements: [
+                    "슈퍼볼 LVI 우승 (2022)",
+                    "NFC 챔피언십 2회",
+                    "최신식 SoFi Stadium 보유",
+                    "2028 LA 올림픽 주경기장 사용 예정"
+                ],
+                revenue: "$686백만 (2023)",
+                operatingIncome: "$286백만",
+                value: "$7.6십억"
+            },
+            patriots: {
+                name: "뉴잉글랜드 패트리어츠",
+                englishName: "New England Patriots",
+                location: "폭스버러, 매사추세츠",
+                founded: "1960년",
+                stadium: "Gillette Stadium (65,878석)",
+                owner: "로버트 크래프트",
+                headCoach: "빌 벨리치크",
+                championships: "6회 (2001, 2003, 2004, 2014, 2016, 2018)",
+                conference: "AFC East",
+                nickname: "The Pats",
+                achievements: [
+                    "톰 브래디 시대 6회 슈퍼볼 우승",
+                    "2007년 정규시즌 16승 무패 기록",
+                    "연속 디비전 우승 기록",
+                    "NFL 역사상 가장 성공적인 다이너스티"
+                ],
+                revenue: "$651백만 (2023)",
+                operatingIncome: "$261백만",
+                value: "$7.4십억"
+            },
+            oilers: {
+                name: "에드먼턴 오일러스",
+                englishName: "Edmonton Oilers",
+                location: "에드먼턴, 앨버타",
+                founded: "1972년",
+                stadium: "Rogers Place (18,641석)",
+                owner: "다릴 카츠",
+                headCoach: "제이 우드크로프트",
+                championships: "5회 (1984, 1985, 1987, 1988, 1990)",
+                conference: "Western Conference",
+                nickname: "The Oil",
+                achievements: [
+                    "웨인 그레츠키의 전설적인 경력",
+                    "1980년대 NHL 지배",
+                    "스탠리 컵 5회 우승",
+                    "코너 맥데이비드 현재 NHL 최고 선수"
+                ],
+                revenue: "$281백만 (2023)",
+                operatingIncome: "$213백만",
+                value: "$2.65십억"
+            },
+            lakers: {
+                name: "로스앤젤레스 레이커스",
+                englishName: "Los Angeles Lakers",
+                location: "로스앤젤레스, 캘리포니아",
+                founded: "1947년",
+                stadium: "Crypto.com Arena (20,000석)",
+                owner: "지니 버스",
+                headCoach: "대런 햄",
+                championships: "17회 (최근: 2020)",
+                conference: "Western Conference",
+                nickname: "The Lake Show",
+                achievements: [
+                    "NBA 역사상 2번째로 많은 우승",
+                    "매직 존슨, 카림 압둘 자바, 코비 브라이언트, 르브론 제임스 등 전설적 선수들",
+                    "할리우드와의 긴밀한 연관성",
+                    "글로벌 브랜드 가치 최상위권"
+                ],
+                revenue: "$516백만 (2023)",
+                operatingIncome: "$199백만",
+                value: "$7.1십억"
+            },
+            giants: {
+                name: "뉴욕 자이언츠",
+                englishName: "New York Giants",
+                location: "이스트 러더퍼드, 뉴저지",
+                founded: "1925년",
+                stadium: "MetLife Stadium (82,500석)",
+                owner: "존 마라 & 스티브 티시",
+                headCoach: "브라이언 다볼",
+                championships: "4회 (1986, 1990, 2007, 2011)",
+                conference: "NFC East",
+                nickname: "Big Blue",
+                achievements: [
+                    "2007년 무패 패트리어츠를 꺾고 슈퍼볼 우승",
+                    "엘리 매닝의 2회 슈퍼볼 MVP",
+                    "뉴욕 시장의 프리미엄",
+                    "NFL 창립 멤버 중 하나"
+                ],
+                revenue: "$584백만 (2023)",
+                operatingIncome: "$190백만",
+                value: "$7.3십억"
+            },
+            manchester: {
+                name: "맨체스터 유나이티드",
+                englishName: "Manchester United",
+                location: "맨체스터, 잉글랜드",
+                founded: "1878년",
+                stadium: "Old Trafford (74,140석)",
+                owner: "글레이저 패밀리",
+                headCoach: "에릭 텐 하흐",
+                championships: "20회 (프리미어리그 13회)",
+                conference: "Premier League",
+                nickname: "Red Devils",
+                achievements: [
+                    "잉글랜드 최다 리그 우승 (20회)",
+                    "1999년 트레블 달성",
+                    "알렉스 퍼거슨 경의 황금시대",
+                    "전 세계 팬덤 7억 5천만 명"
+                ],
+                revenue: "$745백만 (2023)",
+                operatingIncome: "$187백만",
+                value: "$6.55십억"
+            },
+            knicks: {
+                name: "뉴욕 닉스",
+                englishName: "New York Knicks",
+                location: "뉴욕, 뉴욕",
+                founded: "1946년",
+                stadium: "Madison Square Garden (20,789석)",
+                owner: "제임스 돌란",
+                headCoach: "톰 시보도",
+                championships: "2회 (1970, 1973)",
+                conference: "Eastern Conference",
+                nickname: "The Knicks",
+                achievements: [
+                    "매디슨 스퀘어 가든의 상징",
+                    "뉴욕 시장의 프리미엄 가치",
+                    "1970년대 월트 프레이저, 윌리스 리드 시대",
+                    "NBA 창립 멤버"
+                ],
+                revenue: "$504백만 (2023)",
+                operatingIncome: "$182백만",
+                value: "$7.5십억"
+            },
+            texans: {
+                name: "휴스턴 텍산스",
+                englishName: "Houston Texans",
+                location: "휴스턴, 텍사스",
+                founded: "1999년",
+                stadium: "NRG Stadium (72,220석)",
+                owner: "칼 맥네어",
+                headCoach: "데미코 라이언스",
+                championships: "0회",
+                conference: "AFC South",
+                nickname: "The Texans",
+                achievements: [
+                    "NFL 최신 프랜차이즈 (2002년 출범)",
+                    "디비전 타이틀 6회",
+                    "J.J. 와트, 데숀 왓슨 등 스타 플레이어 배출",
+                    "텍사스 석유 산업과의 연관성"
+                ],
+                revenue: "$518백만 (2023)",
+                operatingIncome: "$164백만",
+                value: "$6.1십억"
+            },
+            tottenham: {
+                name: "토트넘 홋스퍼",
+                englishName: "Tottenham Hotspur",
+                location: "런던, 잉글랜드",
+                founded: "1882년",
+                stadium: "Tottenham Hotspur Stadium (62,850석)",
+                owner: "ENIC (조 루이스, 다니엘 레비)",
+                headCoach: "안토니오 콘테",
+                championships: "2회 (1961, 1981)",
+                conference: "Premier League",
+                nickname: "Spurs",
+                achievements: [
+                    "2019년 챔피언스리그 결승 진출",
+                    "최첨단 신축 경기장 보유",
+                    "손흥민을 포함한 글로벌 스타들",
+                    "런던 북부의 명문 클럽"
+                ],
+                revenue: "$523백만 (2023)",
+                operatingIncome: "$161백만",
+                value: "$3.2십억"
+            },
+            warriors: {
+                name: "골든스테이트 워리어스",
+                englishName: "Golden State Warriors",
+                location: "샌프란시스코, 캘리포니아",
+                founded: "1946년",
+                stadium: "Chase Center (18,064석)",
+                owner: "조 래콥",
+                headCoach: "스티브 커",
+                championships: "7회 (최근: 2022)",
+                conference: "Western Conference",
+                nickname: "Dubs",
+                achievements: [
+                    "2015-2022 황금시대 4회 우승",
+                    "스테픈 커리의 3점슛 혁명",
+                    "2016년 정규시즌 73승 기록",
+                    "실리콘밸리 테크 기업들과의 연계"
+                ],
+                revenue: "$474백만 (2023)",
+                operatingIncome: "$142백만",
+                value: "$7.7십억"
+            },
+            kings: {
+                name: "로스앤젤레스 킹스",
+                englishName: "Los Angeles Kings",
+                location: "로스앤젤레스, 캘리포니아",
+                founded: "1967년",
+                stadium: "Crypto.com Arena (18,230석)",
+                owner: "필립 안슈츠",
+                headCoach: "토드 맥렐런",
+                championships: "2회 (2012, 2014)",
+                conference: "Western Conference",
+                nickname: "The Kings",
+                achievements: [
+                    "2012, 2014년 스탠리 컵 우승",
+                    "웨인 그레츠키의 LA 이적으로 미국 하키 대중화",
+                    "할리우드 스타들의 단골 관람",
+                    "캘리포니아 최초의 NHL 팀"
+                ],
+                revenue: "$218백만 (2023)",
+                operatingIncome: "$142백만",
+                value: "$2.9십억"
+            },
+            seahawks: {
+                name: "시애틀 시호크스",
+                englishName: "Seattle Seahawks",
+                location: "시애틀, 워싱턴",
+                founded: "1976년",
+                stadium: "Lumen Field (69,000석)",
+                owner: "폴 앨런 트러스트",
+                headCoach: "피트 캐럴",
+                championships: "1회 (2013)",
+                conference: "NFC West",
+                nickname: "12th Man",
+                achievements: [
+                    "2013년 슈퍼볼 XLVIII 우승",
+                    "Legion of Boom 수비진",
+                    "러셀 윌슨 시대의 성공",
+                    "시애틀 12번째 선수 팬 문화"
+                ],
+                revenue: "$516백만 (2023)",
+                operatingIncome: "$130백만 (추정)",
+                value: "$5.5십억"
+            },
+            packers: {
+                name: "그린베이 패커스",
+                englishName: "Green Bay Packers",
+                location: "그린베이, 위스콘신",
+                founded: "1919년",
+                stadium: "Lambeau Field (81,441석)",
+                owner: "주주들 (공기업)",
+                headCoach: "맷 라플뢰",
+                championships: "4회 (1967, 1996, 2010)",
+                conference: "NFC North",
+                nickname: "The Pack",
+                achievements: [
+                    "NFL 유일한 공기업 구조",
+                    "아론 로저스, 브렛 파브르 등 명 쿼터백",
+                    "Lambeau Field의 혹독한 추위",
+                    "타이틀타운의 전통"
+                ],
+                revenue: "$508백만 (2023)",
+                operatingIncome: "$120백만 (추정)",
+                value: "$5.25십억"
+            },
+            eagles: {
+                name: "필라델피아 이글스",
+                englishName: "Philadelphia Eagles",
+                location: "필라델피아, 펜실베이니아",
+                founded: "1933년",
+                stadium: "Lincoln Financial Field (69,596석)",
+                owner: "제프리 루리",
+                headCoach: "닉 시리아니",
+                championships: "1회 (2017)",
+                conference: "NFC East",
+                nickname: "The Birds",
+                achievements: [
+                    "2017년 슈퍼볼 LII 우승 (언더독)",
+                    "닉 폴스의 기적적인 플레이오프",
+                    "필라델피아의 열정적인 팬덤",
+                    "NFC 챔피언십 4회"
+                ],
+                revenue: "$485백만 (2023)",
+                operatingIncome: "$115백만 (추정)",
+                value: "$4.9십억"
+            },
+            steelers: {
+                name: "피츠버그 스틸러스",
+                englishName: "Pittsburgh Steelers",
+                location: "피츠버그, 펜실베이니아",
+                founded: "1933년",
+                stadium: "Heinz Field (68,400석)",
+                owner: "루니 패밀리",
+                headCoach: "마이크 톰린",
+                championships: "6회 (최근: 2008)",
+                conference: "AFC North",
+                nickname: "Steel Curtain",
+                achievements: [
+                    "NFL 최다 슈퍼볼 우승 (6회)",
+                    "1970년대 Steel Curtain 수비",
+                    "Terrible Towel 전통",
+                    "벤 로슬리스버거, 터로이 폴라말루 등"
+                ],
+                revenue: "$476백만 (2023)",
+                operatingIncome: "$110백만 (추정)",
+                value: "$4.8십억"
+            },
+            celtics: {
+                name: "보스턴 셀틱스",
+                englishName: "Boston Celtics",
+                location: "보스턴, 매사추세츠",
+                founded: "1946년",
+                stadium: "TD Garden (19,580석)",
+                owner: "위크 그로스벡",
+                headCoach: "조 마줄라",
+                championships: "17회 (최근: 2008)",
+                conference: "Eastern Conference",
+                nickname: "The C's",
+                achievements: [
+                    "NBA 최다 우승 (17회)",
+                    "빌 러셀의 11개 반지",
+                    "래리 버드, 폴 피어스, 케빈 가넷",
+                    "보스턴 스포츠의 자긍심"
+                ],
+                revenue: "$444백만 (2023)",
+                operatingIncome: "$105백만 (추정)",
+                value: "$4.7십억"
+            },
+            bears: {
+                name: "시카고 베어스",
+                englishName: "Chicago Bears",
+                location: "시카고, 일리노이",
+                founded: "1920년",
+                stadium: "Soldier Field (61,500석)",
+                owner: "맥케스키 패밀리",
+                headCoach: "맷 에버플루스",
+                championships: "1회 (1985)",
+                conference: "NFC North",
+                nickname: "Da Bears",
+                achievements: [
+                    "1985년 Super Bowl Shuffle",
+                    "85 Bears 역사상 최강 수비진",
+                    "월터 페이튼의 전설",
+                    "NFL 창립 멤버 중 하나"
+                ],
+                revenue: "$456백만 (2023)",
+                operatingIncome: "$100백만 (추정)",
+                value: "$4.6십억"
+            },
+            arsenal: {
+                name: "아스널",
+                englishName: "Arsenal FC",
+                location: "런던, 잉글랜드",
+                founded: "1886년",
+                stadium: "Emirates Stadium (60,260석)",
+                owner: "크롱키 스포츠 & 엔터테인먼트",
+                headCoach: "미켈 아르테타",
+                championships: "13회 (FA컵 기준)",
+                conference: "Premier League",
+                nickname: "The Gunners",
+                achievements: [
+                    "2003-04 시즌 무패 우승 (Invincibles)",
+                    "아르센 벵거의 22년 감독 재임",
+                    "티에리 앙리, 데니스 베르캄프 등 레전드",
+                    "아름다운 축구의 대명사"
+                ],
+                revenue: "$487백만 (2023)",
+                operatingIncome: "$95백만 (추정)",
+                value: "$2.8십억"
+            },
+            heat: {
+                name: "미아미 히트",
+                englishName: "Miami Heat",
+                location: "마이아미, 플로리다",
+                founded: "1988년",
+                stadium: "FTX Arena (19,600석)",
+                owner: "미키 아리슨",
+                headCoach: "에릭 스포엘스트라",
+                championships: "3회 (2006, 2012, 2013)",
+                conference: "Eastern Conference",
+                nickname: "Heat Culture",
+                achievements: [
+                    "르브론 제임스, 드웨인 웨이드, 크리스 보시 빅3",
+                    "2012, 2013 연속 우승",
+                    "Heat Culture 조직 문화",
+                    "마이애미의 화려한 라이프스타일"
+                ],
+                revenue: "$400백만 (2023)",
+                operatingIncome: "$90백만 (추정)",
+                value: "$3.3십억"
+            }
+        };
+
+        function openModal(teamId) {
+            const team = teamData[teamId];
+            if (!team) return;
+
+            document.getElementById('modalTeamName').textContent = team.name + ' (' + team.englishName + ')';
+            document.getElementById('modalTeamLocation').textContent = team.location;
+
+            const detailsHTML = `
+                <div class="detail-section">
+                    <h3>🏟️ 기본 정보</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">창단연도</div>
+                            <div class="detail-value">${team.founded}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">홈 경기장</div>
+                            <div class="detail-value">${team.stadium}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">구단주</div>
+                            <div class="detail-value">${team.owner}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">감독/코치</div>
+                            <div class="detail-value">${team.headCoach}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">소속 리그</div>
+                            <div class="detail-value">${team.conference}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">별명</div>
+                            <div class="detail-value">${team.nickname}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3>💰 재정 정보</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">구단 가치</div>
+                            <div class="detail-value">${team.value}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">연간 수익</div>
+                            <div class="detail-value">${team.revenue}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">영업 이익</div>
+                            <div class="detail-value">${team.operatingIncome}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3>🏆 주요 성과</h3>
+                    <div class="detail-item">
+                        <div class="detail-label">주요 타이틀</div>
+                        <div class="detail-value">${team.championships}</div>
+                    </div>
+                    <div class="achievements">
+                        <h4>주요 업적</h4>
+                        <ul>
+                            ${team.achievements.map(achievement => `<li>${achievement}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modalTeamDetails').innerHTML = detailsHTML;
+            document.getElementById('teamModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('teamModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('teamModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Close modal with ESC key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Filter functionality
+        let currentFilter = null;
+
+        function filterByLeague(league) {
+            const teamItems = document.querySelectorAll('.team-item');
+            const leagueStats = document.querySelectorAll('.league-stat');
+            const filterStatus = document.getElementById('filterStatus');
+            const activeFilter = document.getElementById('activeFilter');
+
+            // Remove previous active states
+            leagueStats.forEach(stat => stat.classList.remove('active'));
+            
+            // If clicking the same filter, reset
+            if (currentFilter === league) {
+                resetFilter();
+                return;
+            }
+
+            currentFilter = league;
+            
+            // Add active state to clicked stat
+            event.target.closest('.league-stat').classList.add('active');
+            
+            // Show filter status
+            const leagueNames = {
+                'nfl': 'NFL',
+                'nba': 'NBA', 
+                'nhl': 'NHL',
+                'premier': '프리미어리그'
+            };
+            activeFilter.textContent = leagueNames[league];
+            filterStatus.style.display = 'block';
+
+            // Filter teams
+            teamItems.forEach(item => {
+                const teamLeague = item.querySelector('.league');
+                if (teamLeague && teamLeague.classList.contains(league)) {
+                    item.classList.remove('hidden');
+                    item.classList.add('filtered');
+                } else {
+                    item.classList.add('hidden');
+                    item.classList.remove('filtered');
+                }
+            });
+
+            // Scroll to team list
+            document.querySelector('.team-list').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetFilter() {
+            const teamItems = document.querySelectorAll('.team-item');
+            const leagueStats = document.querySelectorAll('.league-stat');
+            const filterStatus = document.getElementById('filterStatus');
+            
+            currentFilter = null;
+            
+            // Remove all active states and show all teams
+            leagueStats.forEach(stat => stat.classList.remove('active'));
+            teamItems.forEach(item => {
+                item.classList.remove('hidden', 'filtered');
+            });
+            
+            // Hide filter status
+            filterStatus.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
