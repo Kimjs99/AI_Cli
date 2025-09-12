@@ -1,0 +1,61 @@
+<svg width="200" height="200" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- 배경 그라데이션 -->
+  <defs>
+    <radialGradient id="bg-gradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#10101a;stop-opacity:1" />
+    </radialGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.5" result="coloredBlur" />
+      <feMerge>
+        <feMergeNode in="coloredBlur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="100" height="100" fill="url(#bg-gradient)" />
+
+  <!-- 연결선 (시냅스) -->
+  <g stroke-width="0.3" stroke-opacity="0.6">
+    <line x1="50" y1="50" x2="35" y2="40" stroke="#4f8a8b"/>
+    <line x1="50" y1="50" x2="45" y2="65" stroke="#4f8a8b"/>
+    <line x1="50" y1="50" x2="65" y2="60" stroke="#4f8a8b"/>
+    <line x1="50" y1="50" x2="60" y2="35" stroke="#4f8a8b"/>
+    <line x1="35" y1="40" x2="20" y2="30" stroke="#5f9ea0"/>
+    <line x1="35" y1="40" x2="25" y2="55" stroke="#5f9ea0"/>
+    <line x1="45" y1="65" x2="40" y2="80" stroke="#5f9ea0"/>
+    <line x1="45" y1="65" x2="25" y2="55" stroke="#5f9ea0"/>
+    <line x1="65" y1="60" x2="70" y2="80" stroke="#5f9ea0"/>
+    <line x1="65" y1="60" x2="80" y2="70" stroke="#5f9ea0"/>
+    <line x1="60" y1="35" x2="85" y2="45" stroke="#5f9ea0"/>
+    <line x1="60" y1="35" x2="75" y2="25" stroke="#5f9ea0"/>
+    <line x1="20" y1="30" x2="45" y2="15" stroke="#7fffd4"/>
+    <line x1="40" y1="80" x2="55" y2="90" stroke="#7fffd4"/>
+    <line x1="80" y1="70" x2="90" y2="60" stroke="#7fffd4"/>
+    <line x1="75" y1="25" x2="85" y2="15" stroke="#7fffd4"/>
+    <line x1="15" y1="70" x2="25" y2="55" stroke="#66cdaa"/>
+    <line x1="85" y1="15" x2="75" y2="25" stroke="#66cdaa"/>
+  </g>
+
+  <!-- 노드 (뉴런) -->
+  <g filter="url(#glow)">
+    <circle cx="50" cy="50" r="4.5" fill="#f0f8ff"/>
+    <circle cx="35" cy="40" r="3" fill="#add8e6"/>
+    <circle cx="45" cy="65" r="3.5" fill="#add8e6"/>
+    <circle cx="65" cy="60" r="3" fill="#add8e6"/>
+    <circle cx="60" cy="35" r="3.5" fill="#add8e6"/>
+    <circle cx="20" cy="30" r="2" fill="#b0e0e6"/>
+    <circle cx="25" cy="55" r="2.5" fill="#b0e0e6"/>
+    <circle cx="40" cy="80" r="2" fill="#b0e0e6"/>
+    <circle cx="70" cy="80" r="2.5" fill="#b0e0e6"/>
+    <circle cx="80" cy="70" r="2" fill="#b0e0e6"/>
+    <circle cx="85" cy="45" r="2.5" fill="#b0e0e6"/>
+    <circle cx="75" cy="25" r="2" fill="#b0e0e6"/>
+    <circle cx="45" cy="15" r="2.5" fill="#b0e0e6"/>
+    <circle cx="15" cy="70" r="1.5" fill="#98fb98"/>
+    <circle cx="85" cy="15" r="1.5" fill="#98fb98"/>
+    <circle cx="55" cy="90" r="1.5" fill="#98fb98"/>
+    <circle cx="90" cy="60" r="1.5" fill="#98fb98"/>
+  </g>
+</svg>

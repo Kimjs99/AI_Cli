@@ -1,0 +1,32 @@
+[
+  {
+    "content": "프로젝트 구조 및 기본 설정 생성",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "프론트엔드 기본 홈화면 구현",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "학생 등록 기능 구현",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "학급 등록 기능 구현",
+    "status": "completed",
+    "id": "4"
+  },
+  {
+    "content": "교과과정 설정 기능 구현",
+    "status": "completed",
+    "id": "5"
+  },
+  {
+    "content": "구글 스프레드시트 연동 설정",
+    "status": "completed",
+    "id": "6"
+  }
+]

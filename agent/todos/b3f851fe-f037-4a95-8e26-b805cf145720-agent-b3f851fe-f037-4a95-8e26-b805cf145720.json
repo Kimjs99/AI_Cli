@@ -1,0 +1,27 @@
+[
+  {
+    "content": "CAFA 플랫폼 대용량 데이터 처리 가이드 작성",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Google Forms 데이터 수집 시스템 구현",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "CAFA 에이전트 채점 로직 구현",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "이메일 전송 시스템 구현",
+    "status": "completed",
+    "id": "4"
+  },
+  {
+    "content": "데이터베이스 스키마 및 연동 구현",
+    "status": "completed",
+    "id": "5"
+  }
+]

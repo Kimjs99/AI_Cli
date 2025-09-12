@@ -1,0 +1,20 @@
+[
+  {
+    "content": "Research current workflow automation AI tools and technologies",
+    "status": "completed",
+    "priority": "high",
+    "id": "research-workflow-automation"
+  },
+  {
+    "content": "Understand user's specific workflow automation needs",
+    "status": "in_progress",
+    "priority": "high",
+    "id": "understand-requirements"
+  },
+  {
+    "content": "Provide tailored AI tool recommendations based on requirements",
+    "status": "pending",
+    "priority": "medium",
+    "id": "recommend-tools"
+  }
+]

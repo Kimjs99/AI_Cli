@@ -1,0 +1,27 @@
+[
+  {
+    "content": "GitHub Desktop 기본 설치 및 설정 가이드 작성",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "저장소 관리 (클론, 생성, 추가) 가이드 작성",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "커밋과 푸시 사용법 가이드 작성",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "브랜치 관리 가이드 작성",
+    "status": "completed",
+    "id": "4"
+  },
+  {
+    "content": "Pull Request 생성 및 관리 가이드 작성",
+    "status": "completed",
+    "id": "5"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "content": "Install Task Master MCP server using Claude Code CLI",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Configure API keys for the MCP server",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Initialize Task Master project",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Verify installation and test functionality",
+    "status": "completed",
+    "id": "4"
+  }
+]

@@ -1,0 +1,161 @@
+<context>
+# Overview  
+FitGrow is a mobile application designed to help students systematically record and manage their Physical Activity Promotion System (PAPS) health and fitness evaluation results along with daily physical activities. The app provides personalized growth trend analysis and customized feedback based on accumulated data stored in Google Sheets. The app supports both student mode and teacher mode for comprehensive educational health management.
+
+# Core Features  
+1. **User Account & Profile Management**: Google OAuth 2.0 authentication with mode selection (student/teacher) and profile setup
+
+2. **Google Sheets Integration**: All data stored in user's Google Drive with automated sheet creation and management
+
+3. **Student Mode Features**:
+   - PAPS health & fitness recording with standard evaluation items
+   - Physical activity logging with calendar view
+   - Personal dashboard with growth analysis
+   - Automated report generation and feedback
+
+4. **Teacher Mode Features**:
+   - Class management with student roster
+   - Bulk data upload via Google Sheets templates
+   - Class dashboard with grade distribution analysis
+   - Individual student report access
+
+5. **Data Visualization**: Interactive charts for growth trends, comparative analysis, and strength/weakness identification
+
+6. **Notifications & Motivation**: Push notifications for activity logging and achievement system
+
+# User Experience  
+**Primary Users**: Elementary, middle, and high school students (Student Mode)
+**Secondary Users**: Parents (monitoring child's progress)  
+**Extended Users**: Teachers and school administrators (Teacher Mode)
+
+**Key User Flows**:
+- Google OAuth authentication and mode selection
+- Automated Google Sheets setup in user's Drive
+- Regular PAPS data input and activity logging
+- Dashboard review and progress tracking
+- Teacher bulk data management via spreadsheet templates
+</context>
+<PRD>
+# Technical Architecture  
+**System Architecture**: Mobile client → Backend API → Google Sheets API
+**Frontend**: React Native mobile application for cross-platform compatibility (iOS/Android)
+**Backend**: Node.js/Express API server with Google Sheets API integration
+**Database**: Google Sheets as primary data store (user's Google Drive)
+**Caching**: Redis for API call optimization and response speed improvement
+**Authentication**: Google OAuth 2.0 with react-native-google-signin
+**Analytics**: react-native-chart-kit for data visualization
+**Push Notifications**: Firebase Cloud Messaging (FCM)
+
+**System Components**:
+- Mobile app (React Native with Google OAuth 2.0)
+- REST API backend (Node.js/Express with googleapis library)
+- Google Sheets API integration layer
+- Authentication service (Google OAuth 2.0)
+- Data caching layer (Redis)
+- Analytics engine for trend analysis
+- Notification service
+
+**Data Models (Google Sheets Structure)**:
+**Student Mode Sheets (Per User)**:
+- Profile: Name, DOB, School, Gender
+- BodyInfo: Date, Grade, Height(cm), Weight(kg)  
+- PapsRecords: Date, Grade, ItemCode, Value, Grade
+- ActivityLogs: Date, ActivityType, Duration(min), Notes
+
+**Teacher Mode Template**:
+- {Grade}-{Class}_PAPS_{Date}: StudentID, Name, [PAPS evaluation items...]
+
+**API Integration**:
+- Google Sheets API with minimum required OAuth scopes
+- Batch operations to minimize API call limits
+- Redis caching for frequently accessed data
+
+# Development Roadmap  
+**Phase 1 - MVP Core Features**:
+- Google OAuth 2.0 authentication system
+- Automated Google Sheets creation and management
+- Basic student mode: PAPS data input and activity logging
+- Simple dashboard with basic charts
+- Core mobile app navigation framework
+
+**Phase 2 - Enhanced Features**:
+- Teacher mode with class management
+- Bulk data upload via spreadsheet templates
+- Advanced analytics and comparative charts
+- Growth trend analysis algorithms
+- Automated report generation system
+
+**Phase 3 - User Experience Enhancement**:
+- Push notification system
+- Achievement and gamification elements
+- Advanced UI/UX with animations
+- Export and sharing capabilities
+- Performance optimization
+
+**Phase 4 - Future Enhancements**:
+- Wearable device integration
+- Nutrition tracking features
+- Challenge and social features
+- AI-powered recommendations
+- Advanced teacher dashboard
+
+# Logical Dependency Chain
+**Foundation Layer** (Must be built first):
+1. Google OAuth 2.0 authentication system
+2. Google Sheets API integration and automated sheet creation
+3. Basic mobile app framework and navigation
+
+**Data Layer** (Build upon foundation):
+4. Student mode: PAPS data input and storage
+5. Student mode: Activity logging system  
+6. Teacher mode: Class management system
+7. Teacher mode: Bulk data upload functionality
+
+**Analytics Layer** (Requires data layer):
+8. Dashboard development with basic charts
+9. Growth trend analysis algorithms
+10. Comparative analytics implementation
+
+**User Experience Layer** (Build upon analytics):
+11. Advanced data visualization
+12. Report generation system
+13. Push notification implementation
+
+**Enhancement Layer** (Future iterations):
+14. Gamification and achievement system
+15. Advanced teacher analytics and reporting
+
+# Risks and Mitigations  
+**Technical Challenges**:
+- Google Sheets API rate limiting → Implement Redis caching and batch operations
+- Cross-platform mobile development complexity → Use React Native best practices
+- Data synchronization complexity → Design robust error handling and retry mechanisms
+
+**MVP Scoping**:
+- Focus on core Google Sheets integration and basic student features first
+- Defer advanced analytics until core functionality is stable
+- Prioritize reliable data storage over advanced visualization
+
+**Resource Constraints**:
+- Google API quota management → Implement efficient caching strategy
+- Backend complexity → Start with simple REST API, scale as needed
+- UI/UX design → Use proven mobile design patterns
+
+# Appendix  
+**PAPS Standard Evaluation Items**:
+- Cardiorespiratory Endurance (shuttle run, etc.)
+- Flexibility (sit-and-reach test)
+- Strength/Endurance (push-ups, sit-ups)
+- Agility (50m dash, standing long jump)
+- Body Mass Index (BMI)
+
+**Google OAuth 2.0 Scopes Required**:
+- https://www.googleapis.com/auth/drive.file (for app-created files)
+- https://www.googleapis.com/auth/spreadsheets (for spreadsheet access)
+
+**Target Platforms**: iOS and Android mobile devices
+**Performance Requirements**: API response optimization through Redis caching
+**Accessibility**: Follow mobile accessibility guidelines for student users
+**Localization**: Korean language support with potential for English expansion
+**Security**: HTTPS/SSL encryption, secure token management, minimum OAuth scopes
+</PRD>

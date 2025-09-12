@@ -1,0 +1,26 @@
+[
+  {
+    "content": "프로젝트 진행 과정을 시간순으로 정리",
+    "status": "completed",
+    "priority": "high",
+    "id": "1"
+  },
+  {
+    "content": "마크다운 형식으로 프로젝트 로그 작성",
+    "status": "completed",
+    "priority": "high",
+    "id": "2"
+  },
+  {
+    "content": "각 단계별 세부 내용과 결과물 정리",
+    "status": "completed",
+    "priority": "medium",
+    "id": "3"
+  },
+  {
+    "content": "프로젝트 로그 파일 생성 및 저장",
+    "status": "completed",
+    "priority": "medium",
+    "id": "4"
+  }
+]

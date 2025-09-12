@@ -1,0 +1,212 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "React Native 프로젝트 초기 설정 및 Google OAuth 통합",
+        "description": "React Native 프로젝트 기본 설정, react-native-google-signin 라이브러리 설치 및 구성",
+        "status": "done",
+        "priority": "high",
+        "dependencies": [],
+        "details": "React Native 프로젝트 초기화, react-native-google-signin 설치, Google Cloud Console에서 OAuth 2.0 클라이언트 ID 설정, iOS/Android 플랫폼별 설정 구성",
+        "testStrategy": "Google 로그인 플로우 테스트, OAuth 토큰 획득 및 저장 확인"
+      },
+      {
+        "id": 2,
+        "title": "백엔드 API 서버 및 Google Sheets API 통합 구축",
+        "description": "Node.js/Express 백엔드 서버 구축, Google Sheets API 통합, Redis 캐싱 설정",
+        "status": "done",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "details": "Express.js 서버 설정, googleapis 라이브러리 설치, Google Service Account 또는 OAuth 2.0 설정, Redis 연동, API 엔드포인트 기본 구조 생성",
+        "testStrategy": "Google Sheets API 연결 테스트, Redis 캐싱 동작 확인, 기본 API 엔드포인트 응답 테스트"
+      },
+      {
+        "id": 3,
+        "title": "사용자 인증 시스템 (학생/교사 모드 분리)",
+        "description": "Google OAuth 2.0 기반 인증, 사용자 모드 선택 및 관리 시스템 구현",
+        "status": "in-progress",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "details": "OAuth 2.0 토큰 검증, 사용자 정보 추출, 학생/교사 모드 선택 UI, 사용자 세션 관리, JWT 토큰 발급",
+        "testStrategy": "Google OAuth 인증 플로우 완전성 테스트, 모드 선택 기능 테스트, 토큰 유효성 검증"
+      },
+      {
+        "id": 4,
+        "title": "Google Sheets 자동 생성 시스템",
+        "description": "사용자별 Google Sheets 자동 생성, 표준 템플릿 적용, 권한 관리",
+        "status": "pending",
+        "priority": "high",
+        "dependencies": [
+          3
+        ],
+        "details": "사용자 구글 드라이브에 FitGrow_Data_{userID} 스프레드시트 생성, Profile/BodyInfo/PapsRecords/ActivityLogs 시트 생성, 헤더 및 포맷팅 적용",
+        "testStrategy": "신규 사용자 가입 시 스프레드시트 자동 생성 테스트, 시트 구조 및 권한 확인"
+      },
+      {
+        "id": 5,
+        "title": "기본 네비게이션 및 UI 프레임워크 구축",
+        "description": "앱 전체 네비게이션 구조, 공통 UI 컴포넌트, 한국어 지원 설정",
+        "status": "pending",
+        "priority": "medium",
+        "dependencies": [
+          1
+        ],
+        "details": "React Navigation 6 설정, 탭/스택 네비게이션 구조, 공통 헤더/버튼 컴포넌트, 한국어 i18n 설정, 반응형 디자인 기초",
+        "testStrategy": "모든 화면 간 네비게이션 테스트, UI 컴포넌트 일관성 확인, 한국어 텍스트 표시 확인"
+      },
+      {
+        "id": 6,
+        "title": "학생 프로필 관리 시스템",
+        "description": "학생 기본 정보 입력, 수정, Google Sheets 동기화 기능",
+        "status": "pending",
+        "priority": "medium",
+        "dependencies": [
+          4,
+          5
+        ],
+        "details": "프로필 등록 화면 (이름, 생년월일, 학교명, 성별), Google Sheets Profile 시트 연동, 데이터 검증 및 저장",
+        "testStrategy": "프로필 등록/수정 테스트, Google Sheets 동기화 확인, 데이터 유효성 검증"
+      },
+      {
+        "id": 7,
+        "title": "PAPS 건강체력 평가 기록 시스템",
+        "description": "PAPS 표준 평가 항목별 데이터 입력, Google Sheets 저장, 등급 계산",
+        "status": "pending",
+        "priority": "high",
+        "dependencies": [
+          6
+        ],
+        "details": "심폐지구력, 유연성, 근력/근지구력, 순발력, BMI 입력 폼, PapsRecords 시트 연동, 평가 등급 자동 계산 로직",
+        "testStrategy": "각 평가 항목 입력 테스트, Google Sheets 저장 확인, 등급 계산 알고리즘 검증"
+      },
+      {
+        "id": 8,
+        "title": "신체활동 기록 시스템",
+        "description": "일상 신체활동 입력, 캘린더 뷰, Google Sheets 연동",
+        "status": "pending",
+        "priority": "medium",
+        "dependencies": [
+          6
+        ],
+        "details": "활동 유형 선택 UI, 날짜/시간/지속시간 입력, ActivityLogs 시트 연동, 캘린더 형태 월별 뷰 구현",
+        "testStrategy": "활동 기록 입력 테스트, 캘린더 뷰 데이터 표시 확인, Google Sheets 동기화 테스트"
+      },
+      {
+        "id": 9,
+        "title": "데이터 시각화 라이브러리 통합",
+        "description": "react-native-chart-kit 통합, 기본 차트 컴포넌트 구현",
+        "status": "pending",
+        "priority": "medium",
+        "dependencies": [
+          5
+        ],
+        "details": "react-native-chart-kit 설치, 선 차트/막대 차트/방사형 차트 기본 컴포넌트, Google Sheets 데이터와 연동",
+        "testStrategy": "각 차트 유형 렌더링 테스트, 실제 데이터 바인딩 확인, 터치 인터랙션 테스트"
+      },
+      {
+        "id": 10,
+        "title": "학생 대시보드 및 기본 분석",
+        "description": "학생용 메인 대시보드, 최근 기록 요약, 기본 성장 추이 표시",
+        "status": "pending",
+        "priority": "medium",
+        "dependencies": [
+          7,
+          8,
+          9
+        ],
+        "details": "최근 PAPS 결과 요약, 주간 활동 시간 표시, 기본 성장 추이 차트, Google Sheets 데이터 집계 및 표시",
+        "testStrategy": "대시보드 데이터 로딩 테스트, 실시간 업데이트 확인, 차트 데이터 정확성 검증"
+      },
+      {
+        "id": 11,
+        "title": "교사 모드 - 학급 관리 시스템",
+        "description": "교사용 학급 생성, 학생 명단 관리, 학생 코드 생성 기능",
+        "status": "pending",
+        "priority": "medium",
+        "dependencies": [
+          3,
+          5
+        ],
+        "details": "학급 생성 UI, 학생 명단 입력/수정, 학생 접속 코드 생성 및 공유, 교사 전용 Google Sheets 관리",
+        "testStrategy": "학급 생성/관리 기능 테스트, 학생 코드 생성 및 유효성 확인, 권한 분리 테스트"
+      },
+      {
+        "id": 12,
+        "title": "교사 모드 - Google Sheets 템플릿 업로드 시스템",
+        "description": "교사용 PAPS 데이터 일괄 업로드, 템플릿 처리, 학생 데이터 분배",
+        "status": "pending",
+        "priority": "medium",
+        "dependencies": [
+          11
+        ],
+        "details": "표준 템플릿 시트 구조 정의, 교사 업로드 시트 데이터 파싱, 개별 학생 시트로 데이터 분배 로직",
+        "testStrategy": "템플릿 업로드 기능 테스트, 데이터 파싱 정확성 검증, 학생별 데이터 분배 확인"
+      },
+      {
+        "id": 13,
+        "title": "교사 대시보드 및 학급 분석",
+        "description": "교사용 학급 전체 분석, 등급 분포, 평균 점수 표시",
+        "status": "pending",
+        "priority": "low",
+        "dependencies": [
+          12
+        ],
+        "details": "학급 체력 등급 분포 차트, PAPS 항목별 평균/표준편차 계산, 전년 대비 향상/저하 학생 목록",
+        "testStrategy": "학급 통계 계산 정확성 테스트, 차트 렌더링 확인, 비교 분석 로직 검증"
+      },
+      {
+        "id": 14,
+        "title": "고급 성장 분석 및 비교 시스템",
+        "description": "시계열 분석, 또래 비교, 강약점 분석, 방사형 차트",
+        "status": "pending",
+        "priority": "low",
+        "dependencies": [
+          10
+        ],
+        "details": "시계열 데이터 분석 알고리즘, 또래 평균 데이터 비교, 방사형 차트로 강약점 시각화, 개선 권장사항 로직",
+        "testStrategy": "분석 알고리즘 정확성 테스트, 비교 데이터 신뢰성 검증, 방사형 차트 렌더링 확인"
+      },
+      {
+        "id": 15,
+        "title": "푸시 알림 및 동기부여 시스템",
+        "description": "Firebase Cloud Messaging 통합, 활동 독려 알림, 성과 축하 알림",
+        "status": "pending",
+        "priority": "low",
+        "dependencies": [
+          8
+        ],
+        "details": "Firebase FCM 설정, 주간 활동 기록 리마인더, 목표 달성 축하 알림, 알림 설정 관리 UI",
+        "testStrategy": "알림 발송 테스트, 사용자 알림 설정 확인, 백그라운드 알림 동작 테스트"
+      },
+      {
+        "id": 16,
+        "title": "성능 최적화 및 배포 준비",
+        "description": "Google Sheets API 호출 최적화, Redis 캐싱 강화, 앱 성능 튜닝",
+        "status": "pending",
+        "priority": "low",
+        "dependencies": [
+          14,
+          15
+        ],
+        "details": "API 호출 배치 처리, Redis 캐싱 전략 최적화, 메모리 사용량 최적화, 번들 크기 최적화, 에러 처리 강화",
+        "testStrategy": "API 호출 빈도 측정, 캐싱 효율성 테스트, 메모리 누수 검사, 다양한 디바이스 성능 테스트"
+      }
+    ],
+    "metadata": {
+      "projectName": "PAPS (FitGrow) - Google Sheets 연동 학생 건강체력 관리 앱",
+      "totalTasks": 16,
+      "sourceFile": ".taskmaster/docs/paps_prd.txt",
+      "generatedAt": "2025-08-30",
+      "language": "ko",
+      "techStack": "React Native, Node.js, Google Sheets API, Redis, Firebase FCM",
+      "created": "2025-08-30T01:36:27.256Z",
+      "description": "Tasks for master context",
+      "updated": "2025-08-30T02:05:30.491Z"
+    }
+  }
+}

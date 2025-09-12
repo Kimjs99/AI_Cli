@@ -1,0 +1,12 @@
+[
+  {
+    "content": ".claude의 모든 내용을 agent 폴더로 이동",
+    "status": "in_progress",
+    "id": "1"
+  },
+  {
+    "content": "클론 폴더 생성",
+    "status": "pending",
+    "id": "2"
+  }
+]

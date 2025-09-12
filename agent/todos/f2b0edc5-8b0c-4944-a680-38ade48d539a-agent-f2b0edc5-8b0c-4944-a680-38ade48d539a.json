@@ -1,0 +1,32 @@
+[
+  {
+    "content": "현재 디렉토리가 Git 저장소인지 확인",
+    "status": "completed",
+    "priority": "high",
+    "id": "1"
+  },
+  {
+    "content": "가이드북 전용 디렉토리 생성 및 Git 초기화",
+    "status": "completed",
+    "priority": "high",
+    "id": "2"
+  },
+  {
+    "content": "HTML 파일을 새 저장소에 추가하고 커밋",
+    "status": "completed",
+    "priority": "high",
+    "id": "3"
+  },
+  {
+    "content": "GitHub 원격 저장소 생성 및 연결",
+    "status": "completed",
+    "priority": "high",
+    "id": "4"
+  },
+  {
+    "content": "GitHub Pages 설정하여 웹사이트 배포",
+    "status": "completed",
+    "priority": "high",
+    "id": "5"
+  }
+]
